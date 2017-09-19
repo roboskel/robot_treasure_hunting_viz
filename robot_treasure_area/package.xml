@@ -1,9 +1,9 @@
  <package>
-  <name>robo_treasure</name>
+  <name>robot_treasure_area</name>
   <version>1.0.0</version>
-  <description>
-  Treasure hanting game vizualization by a robot
-  </description>
+  <description>Computes the area between the robot and the treasure. </description>
+
+  <url type="repository">https://github.com/roboskel/robot_treasure_hunting_viz</url>
   
   <maintainer email="kzam@iit.demokritos.gr">Katerina Zamani</maintainer>
   <maintainer email="gstavrinos@iit.demokritos.gr">George Stavrinos</maintainer>

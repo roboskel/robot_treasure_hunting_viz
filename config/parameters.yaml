@@ -1,4 +1,0 @@
-amcl_topic: "amcl_pose"
-treasure_location_x: -1.38479661894
-treasure_location_y: -2.86624727474
-radius_topic: "~treasure_radius"

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<launch>
+
+    <node pkg="robot_treasure_area" type="treasure_area.py" respawn="false" name="treasure_area" output="screen">
+        <rosparam file="$(find robot_treasure_area)/config/parameters.yaml" command="load" />
+    </node>	
+
+    <node pkg="robot_treasure_viz" type="treasure_viz.py" respawn="false" name="treasure_viz" output="screen">
+        <rosparam file="$(find robot_treasure_viz)/config/parameters.yaml" command="load" />
+    </node>
+
+</launch>

@@ -1,0 +1,5 @@
+radius_topic: "/treasure_area/treasure_radius"
+rviz_maker_topic: "~treasure_makrer"
+frame_id: "map"
+state_limit: 1.5
+extra_range: 0.2

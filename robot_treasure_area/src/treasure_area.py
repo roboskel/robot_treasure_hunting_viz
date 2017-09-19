@@ -2,9 +2,10 @@
 import roslib, rospy
 from geometry_msgs.msg import PoseWithCovarianceStamped, Pose, Point
 import numpy as np
-from robo_treasure.msg import RadiusMsg
+from robot_treasure_area.msg import RadiusMsg
+import random
 
-treasure_location_x = 10.0
+treasure_location_x = 0.0
 treasure_location_y = 0.0
 
 
@@ -14,13 +15,18 @@ def init():
     rospy.init_node('treasure_radius')
 
     amcl_topic = rospy.get_param('~amcl_topic','amcl_pose')
-    treasure_location_x = rospy.get_param('~treasure_location_x', 0.0)
-    treasure_location_y = rospy.get_param('~treasure_location_y', 0.0)
+    max_treasures = rospy.get_param('~max_treasures', 2)
+
+    trNum = random.randrange(1, max_treasures+1)
+    treasure_location_x = rospy.get_param('~treasure_location'+ str(trNum) + '_x', 0.0)
+    treasure_location_y = rospy.get_param('~treasure_location'+ str(trNum) + '_y', 0.0)
     radius_topic = rospy.get_param('~radius_topic','~treasure_radius')
 
     rospy.Subscriber(amcl_topic, PoseWithCovarianceStamped, treasure_distance_estimation)
 
     radiusPublisher = rospy.Publisher(radius_topic, RadiusMsg, queue_size=10)
+
+    print 'treasure number = ',trNum
 
     while not rospy.is_shutdown():
         rospy.spin()
@@ -43,6 +49,8 @@ def treasure_distance_estimation(pose_data):
     radiusmsg.radius = radius
     radiusmsg.x = poseData.position.x
     radiusmsg.y = poseData.position.y
+    radiusmsg.treasureX = treasure_location_x
+    radiusmsg.treasureY = treasure_location_y
 
     radiusPublisher.publish(radiusmsg)
 

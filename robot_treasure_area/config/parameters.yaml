@@ -1,0 +1,7 @@
+amcl_topic: "amcl_pose"
+treasure_location1_x: -1.38479661894
+treasure_location1_y: -2.86624727474
+treasure_location2_x: 0.790760217403
+treasure_location2_y: -0.316115357943
+max_treasures: 2
+radius_topic: "~treasure_radius"
