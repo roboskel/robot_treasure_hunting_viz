@@ -15,6 +15,10 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 
+add_service_files(
+    FILES
+    TreasurePoint.srv
+)
 
 add_message_files(
   FILES

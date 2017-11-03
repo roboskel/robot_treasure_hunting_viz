@@ -11,6 +11,11 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
 )
 
+add_service_files(
+    FILES
+    TreasurePoint.srv
+)
+
 find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 
 catkin_package(
