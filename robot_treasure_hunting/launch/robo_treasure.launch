@@ -5,6 +5,10 @@
         <rosparam file="$(find robot_treasure_area)/config/parameters.yaml" command="load" />
     </node>	
 
+    <node pkg="robot_treasure_area" type="gui.py" respawn="false" name="gui" output="screen">
+        <param name="img_path" value="$(find robot_treasure_area)/img/" />
+    </node> 
+
     <node pkg="robot_treasure_viz" type="treasure_viz.py" respawn="false" name="treasure_viz" output="screen">
         <rosparam file="$(find robot_treasure_viz)/config/parameters.yaml" command="load" />
     </node>

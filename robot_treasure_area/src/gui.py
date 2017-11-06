@@ -1,66 +1,58 @@
 #!/usr/bin/env python
 import roslib, rospy
 import Tkinter as tk
-from robot_treasure_area.srv import *
+from robot_treasure_area.srv import ObjectChoice, ObjectChoiceResponse
 
 
 def init():
-    global treasure_location_x, treasure_location_y, radiusPublisher
 
     rospy.init_node('treasure_gui')
+    imgPath = rospy.get_param('~img_path')
 
-    #TreasurePointResponse  -> input
-    rospy.Service('gui_service', TreasurePoint, node_callback)
-
+    # Create a root window and an instance of our gui,
+    # then start the event loop
     root = tk.Tk()
-    GameGui(root).pack(fill="both", expand=True)
+    GameGui(root, imgPath).pack(fill="both", expand=True)
     root.mainloop()
 
-    
     while not rospy.is_shutdown():
         rospy.spin()
 
-def node_callback(req):
-    print req.online
-
-    if req.online == True:
-        print 'it is True...'
-        choice = 1
-        return TreasurePointResponse(choice)
 
 
 class GameGui(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, imgPath):
         tk.Frame.__init__(self, parent)
 
-        # reset button and a label to ease the human interaction
-        self.label = tk.Label(self, text="Which one do you want to find?", font=20).grid(row=0, column=0, sticky="w", padx=50, pady=0)
+        # Build a reset button and a label to ease the human interaction
+        self.label = tk.Label(self, text="Which object do you want to find?", font=20)
         self.reset = tk.Button(self, text="Reset", command = self.press_reset, state="disabled")
 
-        # create four buttons for the missing staff
-        self.button1 = tk.Button(self, text="Keys", command = self.press_button1)
-        self.button2 = tk.Button(self, text="Glasses", command = self.press_button2)
-        self.button3 = tk.Button(self, text="Phone", command = self.press_button3)
-        self.button4 = tk.Button(self, text="Pills", command = self.press_button4)
+        # Create four buttons, one for each missing object
+        self.button1 = tk.Button(self, text="Keys", command = lambda: self.pressed(1))
+        self.button2 = tk.Button(self, text="Glasses", command = lambda: self.pressed(2))
+        self.button3 = tk.Button(self, text="Phone", command = lambda: self.pressed(3))
+        self.button4 = tk.Button(self, text="Pills", command = lambda: self.pressed(4))
 
-        # put characteristic images to the buttons
-        image = tk.PhotoImage(file="img/key.png")
+        # Put characteristic images to the buttons
+        image = tk.PhotoImage(file=str(imgPath)+"key.png")
         self.button1.config(image=image)
         self.button1.image = image
 
-        image = tk.PhotoImage(file="img/glasses.png")
+        image = tk.PhotoImage(file=str(imgPath)+"glasses.png")
         self.button2.config(image=image)
         self.button2.image = image
 
-        image = tk.PhotoImage(file="img/phone.png")
+        image = tk.PhotoImage(file=str(imgPath)+"phone.png")
         self.button3.config(image=image)
         self.button3.image = image
 
-        image = tk.PhotoImage(file="img/pills.png")
+        image = tk.PhotoImage(file=str(imgPath)+"pills.png")
         self.button4.config(image=image)
         self.button4.image = image
 
-        # lay the widgets on the screen in specific grids
+        # Lay the widgets on the screen in specific grids
+        self.label.grid(row=0, column=0, sticky="w", padx=50, pady=0)
         self.reset.grid(row=0, column=1, sticky="e", padx=50, pady=0)
 
         self.button1.grid(row=1, column=0, padx=50, pady=50, sticky="wens")
@@ -68,51 +60,59 @@ class GameGui(tk.Frame):
         self.button3.grid(row=2, column=0, padx=50, pady=50, sticky="wens")
         self.button4.grid(row=2, column=1, padx=50, pady=50, sticky="wens")
 
-        # the same weight to every row and column when the main window expands
+        # The same weight to every row and column when the main window expands
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         self.rowconfigure(2, weight=1)
 
+        self.init_service_client();
 
-    def calculate(self):
-        # get the value from the input widget, convert
-        # it to an int, and do a calculation
+
+
+    """
+    Works as a service client, that will give the human's choice to the service provider.
+    """
+    def init_service_client(self): 
+        rospy.wait_for_service('gui_service')
+
         try:
-            i = int(self.entry.get())
-            result = "%s*2=%s" % (i, i*2)
-        except ValueError:
-            result = "Please enter digits only"
+            self.node_gui_service = rospy.ServiceProxy('gui_service', ObjectChoice)
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
 
-        # set the output widget to have our result
-        self.output.configure(text=result)
+    """
+    When a button is pressed, it sends the respective bid to the service in order to specify the chosen object.
+    @bid: represents the button id , i.e. which button is been pressed
+    """
+    def pressed(self, bid):
 
-    def press_button1(self):
         self.change_state("disabled")
 
         self.reset.config(state="active")
 
-    def press_button2(self):
-        self.change_state("disabled")
+        # send the choice to the service
+        resp = self.node_gui_service(bid)
 
-        self.reset.config(state="active")
+        if resp.status:
+            self.label.config(text="Which object do you want to find?")
+        else:
+            self.label.config(text="An unexpected error occured. Please try again!" , foreground="red")
+            self.press_reset()
 
-    def press_button3(self):
-        self.change_state("disabled")
-
-        self.reset.config(state="active")
-
-    def press_button4(self):
-        self.change_state("disabled")
-
-        self.reset.config(state="active")
-
+    """
+    When reset button is pressed, all the buttons are active again.
+    """
     def press_reset(self):
         self.change_state("active")
 
         self.reset.config(state="disabled")
 
+    """
+    Change the state of each button.
+    @mystate: can take values from <disabled, active, normal>
+    """
     def change_state(self, mystate):
         self.button1.config(state=mystate)
         self.button2.config(state=mystate)
@@ -120,10 +120,6 @@ class GameGui(tk.Frame):
         self.button4.config(state=mystate)
 
 
-
-# if this is run as a program (versus being imported),
-# create a root window and an instance of our example,
-# then start the event loop
-
+# Init rosnode and the GUI.
 if __name__ == "__main__":
     init()

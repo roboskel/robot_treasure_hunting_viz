@@ -1,10 +1,12 @@
 # robot_treasure_hunting_viz
 
-* Treasure hunting game visualization, aided by a robot. 
-* The users can navigate the robot in a place, where the map is provided.
-* The robot marks the range, indicating the area where the treasure can be located. 
-* The closer the robot reaches the treasure, the minimum the range becomes.
-* The marking colors in the range denote the "hot" and the "cold" area, depending on the distance between the robot and the treasure.
+This is a treasure hunting game visualization, aided by a robot. 
+We assume 4 objects, easily been lost in a house environment and we display them in a gui. 
+The user can choose an object which represents the "hidden treasure".
+The users can navigate the robot in a place, where the map is provided.
+The robot marks the range, indicating the area where the treasure can be located. 
+The closer the robot reaches the treasure, the minimum the range becomes.
+The marking colors in the range denote the "hot" and the "cold" area, depending on the distance between the robot and the treasure.
 
 Tested on:
 * Ubuntu 16.04
@@ -34,18 +36,17 @@ Tested on:
 
 You can modify some parameters of the game if you wish.
 
-1. Add a new treasure to the game.
-If you want to "hide" some treasures on the map, simple set a point at the *robot_treasure_area/config/parameters.yaml* file like the example below:
-treasure_location***N***_x: -1.38479661894
-treasure_location***N***_y: 2.86624727474
-, where x, y are the x-,y- coordinates respectively and ***N*** is the increment identification number of the treasure. 
-Moreover don't forget that every time you add a new treasure, you should augment the number of ***max_treasures*** parameter appropriately (is always equal to ***N***). 
+1. Change treasure position.
+If you want to "hide" some treasures on your map, set a point at the *robot_treasure_area/config/parameters.yaml* file like the example below:
+  * treasure_locationN_x: -1.38479661894
+  * treasure_locationN_y: 2.86624727474
+, where x, y are the x-,y- coordinates respectively and ***N*** is the increment identification number of the treasure (N >=1 and N<=4). 
 
 2. Synchronize with the frame id of rviz. At the ***frame_id*** parameter of the the *robot_treasure_viz/config/parameters.yaml* file, set the same id as it is defined  in the *Global Option > Fixed Frame* of rviz
 
 3. Specify the boundary of "hot" and "cold" area, depending on your world. Go to *robot_treasure_viz/config/parameters.yaml*  file and change the parameter ***state_limit*** (in meters).
 
-4. Specify a bigger coverage range. Go to *robot_treasure_viz/config/parameters.yaml*  file and change the parameter ***extra_range*** (in meters).
+4. Specify a "comfort zone" to create a bigger coverage range, thus the treasure is surely into the visualized area. Go to *robot_treasure_viz/config/parameters.yaml*  file and change the parameter ***extra_range*** (in meters).
 
 ## Execute the application on a gazebo environment:
 
@@ -73,6 +74,6 @@ Then execute the following:
     roslaunch robot_treasure_hunting robo_treasure.launch
     ```
 
-5. Go to rviz and Add the Marker that publishes to the *treasure_viz/rviz_marker_topic* topic.
+5. Go to rviz and Add the Marker that publishes to the */treasure_viz/treasure_marker* topic.
 
-6. Then, navigate the robot via rviz and ... Enjoy!
+6. Then, after selecting the missing object, navigate the robot via rviz and ... Enjoy!

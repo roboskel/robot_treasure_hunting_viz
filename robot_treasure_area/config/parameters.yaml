@@ -7,5 +7,4 @@ treasure_location3_x: -16.1443576813
 treasure_location3_y: -8.46252536774
 treasure_location4_x: -19.1367893219
 treasure_location4_y: -16.6098937988
-max_treasures: 4
 radius_topic: "~treasure_radius"

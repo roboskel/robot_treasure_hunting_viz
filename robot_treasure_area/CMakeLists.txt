@@ -17,7 +17,7 @@ find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 
 add_service_files(
     FILES
-    TreasurePoint.srv
+    ObjectChoice.srv
 )
 
 add_message_files(
@@ -27,7 +27,7 @@ add_message_files(
 
 generate_messages(
 	DEPENDENCIES
-  sensor_msgs
+        sensor_msgs
 	std_msgs
 )
 
